@@ -1,4 +1,5 @@
-﻿using Android.App;
+﻿using Acr.UserDialogs;
+using Android.App;
 using Android.Runtime;
 
 namespace Mauilytics;
@@ -12,4 +13,11 @@ public class MainApplication : MauiApplication
 	}
 
 	protected override MauiApp CreateMauiApp() => MauiProgram.CreateMauiApp();
+
+	public override void OnCreate()
+	{
+		base.OnCreate();
+
+		UserDialogs.Init(this);
+	}
 }

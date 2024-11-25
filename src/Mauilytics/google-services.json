@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "151281195157",
+    "project_id": "mauilytics",
+    "storage_bucket": "mauilytics.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:151281195157:android:8363d2ff19250fc024639c",
+        "android_client_info": {
+          "package_name": "com.cklabs.mauilytics"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDBzVY0waf5NtHsNqEyHMsMzwjqeMf2Wfs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

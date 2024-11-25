@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Mauilytics.AboutPage"
+             Title="About">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30" Spacing="20">
+            <Label Text="About Mauilytics"
+                   Style="{StaticResource Headline}"
+                   HorizontalOptions="Center" />
+            
+            <Label Text="This is a demonstration application showing Firebase Analytics and Crashlytics integration with .NET MAUI. The app includes features like:"
+                   Style="{StaticResource BodyText}"
+                   HorizontalOptions="Fill" />
+            
+            <Label Text="• Counter tracking with analytics&#10;• Navigation event logging&#10;• Simulated API calls with timing&#10;• Exception handling and crash reporting"
+                   Style="{StaticResource BodyText}"
+                   HorizontalOptions="Fill" />
+            
+            <Button Text="Go Back"
+                    Clicked="OnGoBackClicked"
+                    HorizontalOptions="Fill" />
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>
