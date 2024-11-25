@@ -1,58 +1,98 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
+    <!-- Basic Properties -->
+    <PropertyGroup>
+        <!-- Target Frameworks -->
+        <TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
 
-	<PropertyGroup>
-		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+        <!-- Project Configuration -->
+        <OutputType>Exe</OutputType>
+        <RootNamespace>Mauilytics</RootNamespace>
+        <UseMaui>true</UseMaui>
+        <SingleProject>true</SingleProject>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
 
-		<OutputType>Exe</OutputType>
-		<RootNamespace>Mauilytics</RootNamespace>
-		<UseMaui>true</UseMaui>
-		<SingleProject>true</SingleProject>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>disable</Nullable>
+        <!-- Display name -->
+        <ApplicationTitle>Mauilytics</ApplicationTitle>
 
-		<!-- Display name -->
-		<ApplicationTitle>Mauilytics</ApplicationTitle>
+        <!-- App Identifier -->
+        <ApplicationId>com.cklabs.mauilytics</ApplicationId>
 
-		<!-- App Identifier -->
-		<ApplicationId>com.cklabs.mauilytics</ApplicationId>
+        <!-- Versions -->
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <ApplicationVersion>1</ApplicationVersion>
 
-		<!-- Versions -->
-		<ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-		<ApplicationVersion>1</ApplicationVersion>
+        <!-- Platform Minimum Versions -->
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
+        <SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+    </PropertyGroup>
 
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
-		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
-	</PropertyGroup>
+    <!-- MAUI Resources -->
+    <ItemGroup>
+        <!-- App Icon -->
+        <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
-	<ItemGroup>
-		<!-- App Icon -->
-		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+        <!-- Splash Screen -->
+        <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
 
-		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+        <!-- Images -->
+        <MauiImage Include="Resources\Images\*" />
+        <MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
 
-		<!-- Images -->
-		<MauiImage Include="Resources\Images\*" />
-		<MauiImage Update="Resources\Images\dotnet_bot.png" Resize="True" BaseSize="300,185" />
+        <!-- Custom Fonts -->
+        <MauiFont Include="Resources\Fonts\*" />
 
-		<!-- Custom Fonts -->
-		<MauiFont Include="Resources\Fonts\*" />
+        <!-- Raw Assets -->
+        <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
+    </ItemGroup>
 
-		<!-- Raw Assets (also remove the "Resources\Raw" prefix) -->
-		<MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
-	</ItemGroup>
+    <!-- NuGet Packages -->
+    <ItemGroup>
+        <!-- Third-party Packages -->
+        <PackageReference Include="Acr.UserDialogs" Version="9.1.0" />
+        <PackageReference Include="Plugin.Firebase" Version="3.1.1" />
+        
+        <!-- MAUI Core Packages -->
+        <PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+        <PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="Acr.UserDialogs" Version="9.1.0" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
-		<PackageReference Include="Plugin.Firebase" Version="3.1.1" />
-	</ItemGroup>
+    <!-- Android Configuration -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+        <GoogleServicesJson Include="google-services.json" />
+    </ItemGroup>
 
-	<ItemGroup>
-		<GoogleServicesJson Include="google-services.json" />
-		<BundleResource Include="GoogleService-Info.plist" Link="GoogleService-Info.plist" />
-	</ItemGroup>
+    <!-- iOS Configuration -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-ios'">
+        <BundleResource Include="GoogleService-Info.plist" Link="GoogleService-Info.plist" />
+        <!-- Required for iOS Firebase -->
+        <PackageReference Include="AdamE.Firebase.iOS.Installations" Version="10.24.0" />
+    </ItemGroup>
+
+    <!-- Firebase Analytics Swift Configuration -->
+    <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+        <_SwiftPlatform Condition="$(RuntimeIdentifier.StartsWith('iossimulator-'))">iphonesimulator</_SwiftPlatform>
+        <_SwiftPlatform Condition="$(RuntimeIdentifier.StartsWith('ios-'))">iphoneos</_SwiftPlatform>
+    </PropertyGroup>
+
+    <!-- Swift Libraries Linking -->
+    <Target Name="LinkWithSwift" DependsOnTargets="_ParseBundlerArguments;_DetectSdkLocations" BeforeTargets="_LinkNativeExecutable">
+        <ItemGroup>
+            <_CustomLinkFlags Include="-L" />
+            <_CustomLinkFlags Include="/usr/lib/swift" />
+            <_CustomLinkFlags Include="-L" />
+            <_CustomLinkFlags Include="$(_SdkDevPath)/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/$(_SwiftPlatform)" />
+            <_CustomLinkFlags Include="-Wl,-rpath" />
+            <_CustomLinkFlags Include="-Wl,/usr/lib/swift" />
+        </ItemGroup>
+    </Target>
+
+    <!-- iOS Signing Configuration for Development -->
+    <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
+        <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
+        <CodesignKey>Apple Development</CodesignKey>
+        <CodesignProvision>Automatic</CodesignProvision>
+    </PropertyGroup>
 
 </Project>

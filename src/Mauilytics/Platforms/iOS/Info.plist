@@ -9,6 +9,8 @@
 		<integer>1</integer>
 		<integer>2</integer>
 	</array>
+	<key>CFBundleIdentifier</key>
+	<string>com.cklabs.mauilytics</string>
 	<key>UIRequiredDeviceCapabilities</key>
 	<array>
 		<string>arm64</string>
