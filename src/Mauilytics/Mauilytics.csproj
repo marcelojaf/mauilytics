@@ -88,6 +88,11 @@
         </ItemGroup>
     </Target>
 
+    <!-- According to https://github.com/AdamEssenmacher/GoogleApisForiOSComponents/blob/main/Readme.md#firebase-crashlytics -->
+    <PropertyGroup Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">
+        <_ExportSymbolsExplicitly>false</_ExportSymbolsExplicitly>
+    </PropertyGroup>
+
     <!-- iOS Signing Configuration for Development -->
     <PropertyGroup Condition="$(TargetFramework.Contains('-ios'))">
         <RuntimeIdentifier>ios-arm64</RuntimeIdentifier>

@@ -1,5 +1,6 @@
 ﻿using Acr.UserDialogs;
 using Plugin.Firebase.Analytics;
+using Plugin.Firebase.Crashlytics;
 
 namespace Mauilytics;
 
@@ -93,12 +94,7 @@ public partial class MainPage : ContentPage
         }
         catch (Exception ex)
         {
-            CrossFirebaseAnalytics.Current.LogEvent("handled_exception",
-                new Dictionary<string, object>
-                {
-                    { "exception_type", ex.GetType().Name },
-                    { "exception_message", ex.Message }
-                });
+            CrossFirebaseCrashlytics.Current.RecordException(ex);
             
             DisplayAlert("Exception Generated", 
                         "A test exception was generated and logged.", 

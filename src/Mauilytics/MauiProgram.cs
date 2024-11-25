@@ -1,9 +1,13 @@
 ﻿using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
+using Plugin.Firebase.Analytics;
+using Plugin.Firebase.Crashlytics;
+
 #if IOS
 using Plugin.Firebase.Core.Platforms.iOS;
 #elif ANDROID
 using Plugin.Firebase.Core.Platforms.Android;
+
 #endif
 
 namespace Mauilytics;
@@ -33,16 +37,53 @@ public static class MauiProgram
 	{
 		builder.ConfigureLifecycleEvents(events => {
 #if IOS
-		events.AddiOS(iOS => iOS.WillFinishLaunching((_,__) => {
-                CrossFirebase.Initialize();
-                return false;
-		}));
+			events.AddiOS(iOS => iOS.WillFinishLaunching((_,__) => {
+					CrossFirebase.Initialize();
+					SetupCrashlytics();
+					return false;
+			}));
 #elif ANDROID
-		events.AddAndroid(android => android.OnCreate((activity, _) =>
-						CrossFirebase.Initialize(activity)));
+			events.AddAndroid(android => android.OnCreate((activity, _) => {
+
+					SetupCrashlytics();
+					CrossFirebase.Initialize(activity);
+			}));
 #endif
 		});
 
+		builder.Services.AddSingleton(_ => CrossFirebaseCrashlytics.Current);
+        builder.Services.AddSingleton(_ => CrossFirebaseAnalytics.Current);
+
 		return builder;
 	}
+
+	private static void SetupCrashlytics()
+    {
+        // Habilitar coleta de crashes
+        CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
+        
+        // Configurar handler para exceções não tratadas
+        AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+        {
+            var exception = args.ExceptionObject as Exception;
+            if (exception != null)
+            {
+                CrossFirebaseCrashlytics.Current.RecordException(exception);
+            }
+        };
+        
+        // Configurar handler para exceções de Task não observadas
+        TaskScheduler.UnobservedTaskException += (sender, args) =>
+        {
+            CrossFirebaseCrashlytics.Current.RecordException(args.Exception);
+            args.SetObserved(); // Previne que o processo seja terminado
+        };
+        
+        // Registrar chaves e valores customizados (opcional)
+        CrossFirebaseCrashlytics.Current.SetCustomKey("environment", "production");
+        CrossFirebaseCrashlytics.Current.SetUserId("mytestinguser123");
+        
+        // Log que o Crashlytics está pronto
+        CrossFirebaseCrashlytics.Current.Log("Crashlytics initialized");
+    }
 }
