@@ -60,6 +60,13 @@
 
     <!-- Android Configuration -->
     <ItemGroup Condition="'$(TargetFramework)' == 'net8.0-android'">
+        <PackageReference Include="Xamarin.AndroidX.Core" Version="1.15.0.1" />
+        <PackageReference Include="Xamarin.AndroidX.Collection" Version="1.4.5.1" />
+        <PackageReference Include="Xamarin.AndroidX.Collection.Ktx" Version="1.4.5.1" />
+        <PackageReference Include="Xamarin.AndroidX.Activity.Ktx" Version="1.9.3.1" />
+        <PackageReference Include="Xamarin.AndroidX.Browser" Version="1.8.0.7" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core" Version="2.8.7.1" />
+        <PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData.Core.Ktx" Version="2.8.7.1" />
         <GoogleServicesJson Include="google-services.json" />
     </ItemGroup>
 

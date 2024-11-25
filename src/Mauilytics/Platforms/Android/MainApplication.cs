@@ -1,6 +1,7 @@
 ﻿using Acr.UserDialogs;
 using Android.App;
 using Android.Runtime;
+using Plugin.Firebase.Crashlytics;
 
 namespace Mauilytics;
 
@@ -17,7 +18,7 @@ public class MainApplication : MauiApplication
 	public override void OnCreate()
 	{
 		base.OnCreate();
-
+		CrossFirebaseCrashlytics.Current.SetCrashlyticsCollectionEnabled(true);
 		UserDialogs.Init(this);
 	}
 }
