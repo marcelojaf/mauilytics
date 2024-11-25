@@ -14,7 +14,7 @@ public partial class AboutPage : ContentPage
     /// </summary>
     private async void OnGoBackClicked(object sender, EventArgs e)
     {
+        CrossFirebaseAnalytics.Current.LogEvent(FirebaseConstants.Events.NavigatedFromAbout);
         await Navigation.PopAsync();
-        CrossFirebaseAnalytics.Current.LogEvent("navigated_from_about");
     }
 }
